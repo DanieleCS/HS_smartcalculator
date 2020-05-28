@@ -1,10 +1,9 @@
 # write your code here
 
 
-class Calculator():
-
-    VALID_COMMANDS=['exit','help']
-    CHAR_LETTERS = 'abcdefghijklmnopqrstuvwxyz'
+class Calculator:
+    VALID_COMMANDS = ['exit', 'help']
+    CHAR_LETTERS = 'abcdefghijklmnopqrstuvwxyz'  # noqa
     CHAR_NUMBERS = '0123456789'
     CHAR_OPERATORS = '=+-'
     CHAR_SEPARATORS = ' ' + CHAR_OPERATORS
@@ -20,14 +19,14 @@ class Calculator():
     TYPE_OPERATOR = 'OPERATOR'
 
     def show_help(self):
-        print(f"The {self.__class__.__name___} is able to perform some calculations\n" +
+        print(f"The {self.__class__.__name__} is able to perform some calculations\n" +
               "It can calculates sums and differences of numbers")
 
     def __init__(self):
         self.result = None
         self.local_vars = {}
 
-    def get_inputs(self):
+    def get_inputs(self): # noqa
         while True:
             in_text = input()
             if len(in_text) > 0:
@@ -75,8 +74,8 @@ class Calculator():
             self.show_help()
         return result
 
-    def parse_assignment(self, input):
-        sides = input.split('=')
+    def parse_assignment(self, input_line):
+        sides = input_line.split('=')
         token_id = sides[0].strip()
         if len(sides) != 2:
             return self.STATUS_INVALID_ASSIGN
@@ -91,13 +90,12 @@ class Calculator():
         else:
             self.local_vars[key] = value
 
-
-    def parse_expression(self, input):
+    def parse_expression(self, input_line):
         i = 0
         items = []
         status = self.STATUS_VALID
-        while i < len(input):
-            char = input[i]
+        while i < len(input_line):
+            char = input_line[i]
             if char == ' ':
                 i += 1
             elif char in self.CHAR_OPERATORS:
@@ -105,8 +103,8 @@ class Calculator():
                 i += 1
             else:
                 str_item = ''
-                while i < len(input) and input[i] not in self.CHAR_SEPARATORS:
-                    str_item += input[i]
+                while i < len(input_line) and input_line[i] not in self.CHAR_SEPARATORS:
+                    str_item += input_line[i]
                     i += 1
                 if str_item.isnumeric():
                     items.append((self.TYPE_NUMBER, int(str_item)))
@@ -123,15 +121,15 @@ class Calculator():
         # print({'status': status, 'items': items})
         return {'status': status, 'items': items}
 
-    def eval_expression(self, input):
+    def eval_expression(self, input_line):
 
-        parsed_expression = self.parse_expression(input)
+        parsed_expression = self.parse_expression(input_line)
         if parsed_expression['status'] != 'VALID':
             return parsed_expression['status']
 
         result = 0
         state = 'START'
-        for itemtype, item in parsed_expression['items']:
+        for itemtype, item in parsed_expression['items']: # noqa
             state, result = self.process_item(item, itemtype, state, result)
             if state == 'ERROR':
                 break
@@ -140,7 +138,6 @@ class Calculator():
             return result
         else:
             return None
-
 
     def process_item(self, item, itemtype, state, result):
         if itemtype == self.TYPE_NUMBER:
@@ -172,8 +169,6 @@ class Calculator():
             if item in self.local_vars:
                 item = self.local_vars[item]
                 state, result = self.process_item(item, self.TYPE_NUMBER, state, result)
-
-
 
         return state, result
 
